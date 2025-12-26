@@ -148,7 +148,7 @@ transactionInput.addEventListener("input", () => {
   transactionInput.value = transactionInput.value.replace(/\D/g, ''); // ne garder que chiffres
 
   if (selectedNetwork === "MTN") {
-    validateBtn.disabled = transactionInput.value.length !== 6;
+    validateBtn.disabled = transactionInput.value.length !== 12;
   } else if (selectedNetwork === "MOOV") {
     validateBtn.disabled = transactionInput.value.length !== 12;
   } else {
