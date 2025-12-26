@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Paiement</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 60px auto;
+      background: #020617;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+    }
+
+    .network-choice button {
+      width: 45%;
+      padding: 12px;
+      margin: 10px 5px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .network-choice button:first-child {
+      background: #ffcc00;
+      color: black;
+    }
+
+    .network-choice button:last-child {
+      background: #0ea5e9;
+      color: white;
+    }
+
+    .transaction {
+      margin-top: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+
+    #validateBtn {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #22c55e;
+      color: black;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:disabled,
+    input:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .help {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Paiement – Accès au jeu</h1>
+
+  <p><strong>Frais d’accès :</strong> 200 FCFA</p>
+
+  <h3>Choisissez votre réseau</h3>
+  <div class="network-choice">
+    <button type="button" onclick="selectNetwork('MTN')">MTN</button>
+    <button type="button" onclick="selectNetwork('MOOV')">MOOV</button>
+  </div>
+
+  <div class="transaction">
+    <p>Après paiement, entrez l’ID de transaction :</p>
+    <input type="text" id="transactionId" placeholder="000000000000" disabled>
+    <button type="button" id="validateBtn" disabled>Valider</button>
+  </div>
+
+  <div class="help">
+    Si le paiement ne se lance pas automatiquement,<br>
+    composez le code affiché par votre réseau.
+  </div>
+</div>
+
+<script>
+let selectedNetwork = "";
+const transactionInput = document.getElementById("transactionId");
+const validateBtn = document.getElementById("validateBtn");
+
+function selectNetwork(reseau) {
+  selectedNetwork = reseau;
+
+  transactionInput.disabled = false;
+  transactionInput.value = "";
+  validateBtn.disabled = true;
+
+  let ussd = "";
+
+  if (reseau === "MTN") {
+    ussd = "*880*1*1*0157031750*0157031750*200#";
+    transactionInput.placeholder = "000000000000";
+    alert("Composez si besoin : " + ussd);
+  }
+
+  if (reseau === "MOOV") {
+    ussd = "*855*1*1*0199037082*0199037082*200#";
+    transactionInput.placeholder = "000000000000";
+    alert("Composez si besoin : " + ussd);
+  }
+
+  // Encodage complet USSD
+  const encodedUssd = encodeURIComponent(ussd);
+  window.location.href = "tel:" + encodedUssd;
+}
+
+// Blocage caractères non numériques et activation bouton
+transactionInput.addEventListener("input", () => {
+  transactionInput.value = transactionInput.value.replace(/\D/g, ''); // ne garder que chiffres
+
+  if (selectedNetwork === "MTN") {
+    validateBtn.disabled = transactionInput.value.length !== 6;
+  } else if (selectedNetwork === "MOOV") {
+    validateBtn.disabled = transactionInput.value.length !== 12;
+  } else {
+    validateBtn.disabled = true;
+  }
+});
+
+// Validation finale
+validateBtn.addEventListener("click", () => {
+  const id = transactionInput.value.trim();
+
+  if (!selectedNetwork) {
+    alert("Veuillez choisir un réseau !");
+    return;
+  }
+
+  if ((selectedNetwork === "MTN" && id.length !== 12) || 
+      (selectedNetwork === "MOOV" && id.length !== 12)) {
+    alert("ID invalide pour " + selectedNetwork + " !");
+    return;
+  }
+
+  alert("Paiement enregistré ✅ Bienvenue !");
+  window.location.href = "game.html";
+});
+</script>
+
+</body>
+</html>

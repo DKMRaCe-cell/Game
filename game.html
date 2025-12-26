@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Jeu 🎡</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    background: #0f172a;
+    color: white;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 2rem 1rem;
+  }
+
+  /* ===== CONTAINER ===== */
+  .game-container {
+    max-width: 700px;
+    margin: 3rem auto;
+    background: #1e293b;
+    padding: 3rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    display: none;
+  }
+
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ===== WHEEL ===== */
+  .wheel-wrapper {
+    position: relative;
+    width: 350px;
+    height: 350px;
+    margin: 0 auto 2rem auto;
+  }
+
+  .wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 10px solid #22c55e;
+    background: conic-gradient(
+      #22c55e 0deg 51.4deg,
+      #16a34a 51.4deg 102.8deg,
+      #facc15 102.8deg 154.2deg,
+      #eab308 154.2deg 205.6deg,
+      #3b82f6 205.6deg 257deg,
+      #2563eb 257deg 308.4deg,
+      #ef4444 308.4deg 360deg
+    );
+  }
+
+  .pointer-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    transform-origin: 0 0;
+  }
+
+  .pointer {
+    position: absolute;
+    top: -12px;
+    left: 175px;
+    width: 24px;
+    height: 24px;
+    background: yellow;
+    border-radius: 50%;
+  }
+
+  /* ===== BUTTON ===== */
+  #spinBtn {
+    padding: 1.2rem 3rem;
+    font-size: 1.2rem;
+    margin-top: 2rem;
+    border-radius: 20px;
+    border: none;
+    background: #22c55e;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s ease;
+  }
+
+  #spinBtn:hover {
+    background: #16a34a;
+    transform: scale(1.05);
+  }
+
+  #result {
+    margin-top: 2rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  /* ===== LOADER ===== */
+  #loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+  .loader-content h2 {
+    font-size: 2rem;
+    letter-spacing: 2px;
+  }
+
+  /* ===== MEDIA QUERIES ===== */
+  @media (max-width: 768px) {
+    html { font-size: 18px; }
+    h1 { font-size: 2.5rem; }
+    p { font-size: 1.2rem; }
+    #spinBtn { font-size: 1.1rem; padding: 1rem 2.5rem; }
+    .wheel-wrapper { width: 280px; height: 280px; }
+    .pointer { width: 20px; height: 20px; left: 140px; top: -10px; }
+  }
+
+  @media (max-width: 480px) {
+    html { font-size: 16px; }
+    h1 { font-size: 2rem; }
+    p { font-size: 1rem; }
+    #spinBtn { font-size: 1rem; padding: 0.9rem 2rem; }
+    .wheel-wrapper { width: 220px; height: 220px; }
+    .pointer { width: 16px; height: 16px; left: 110px; top: -8px; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-content">
+    <h2>Chargement<span id="dots">.</span></h2>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="game-container" id="game">
+  <h1>🎡 Tourne la roue</h1>
+  <p>Joue – Progresse – Gagne</p>
+
+  <div class="wheel-wrapper">
+    <div class="wheel" id="wheel"></div>
+    <div class="pointer-wrapper" id="pointerWrapper">
+      <div class="pointer"></div>
+    </div>
+  </div>
+
+  <button id="spinBtn">TOURNER</button>
+  <div id="result"></div>
+</div>
+
+<script>
+  // ===== LOADER LOGIC =====
+  let dots = document.getElementById("dots");
+  let dotCount = 1;
+
+  setInterval(() => {
+    dotCount = (dotCount % 3) + 1;
+    dots.textContent = ".".repeat(dotCount);
+  },500);
+
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("game").style.display = "block";
+    }, 8000); // loader plus rapide
+  });
+
+  // ===== GAME LOGIC =====
+  const spinBtn = document.getElementById("spinBtn");
+  const pointerWrapper = document.getElementById("pointerWrapper");
+  const result = document.getElementById("result");
+
+  const weightedSections = [
+    { symbol: "1️⃣", weight: 2 },
+    { symbol: "2️⃣", weight: 1.5 },
+    { symbol: "5️⃣", weight: 0.8 },
+    { symbol: "🌐", weight: 0.7 },
+    { symbol: "🔄", weight: 25 },
+    { symbol: "ℹ️", weight: 30 },
+    { symbol: "✖️", weight: 40 }
+  ];
+
+  const callNumbers = {
+    "1️⃣": "tel:*855%23",
+    "2️⃣": "tel:*855%23",
+    "5️⃣": "tel:*855%23",
+    "🌐": "tel:*855%23"
+  };
+
+  let spinning = false;
+
+  function getRandomWeightedSymbol() {
+    const totalWeight = weightedSections.reduce((sum, item) => sum + item.weight, 0);
+    let random = Math.random() * totalWeight;
+    for (let item of weightedSections) {
+      if (random < item.weight) return item.symbol;
+      random -= item.weight;
+    }
+  }
+
+  spinBtn.addEventListener("click", () => {
+    if (spinning) return;
+    spinning = true;
+    result.textContent = "";
+
+    const selected = getRandomWeightedSymbol();
+    const sections = weightedSections.map(item => item.symbol);
+    const selectedIndex = sections.indexOf(selected);
+
+    let totalSteps = 50 + selectedIndex * 5;
+    let currentStep = 0;
+    const angleStep = 360 / sections.length;
+
+    function rotatePointer() {
+      const angle = angleStep * currentStep;
+      pointerWrapper.style.transform = `rotate(${angle}deg)`;
+      currentStep++;
+
+      if (currentStep <= totalSteps) {
+        setTimeout(rotatePointer, 50);
+      } else {
+        handleResult(selected);
+        spinning = false;
+      }
+    }
+
+    rotatePointer();
+  });
+
+  function handleResult(symbol) {
+    switch (symbol) {
+      case "1️⃣":
+      case "2️⃣":
+      case "5️⃣":
+      case "🌐":
+        result.textContent = `${symbol} → Récupérer Gain`;
+        alert("🎉 Gain obtenu !");
+        window.location.href = callNumbers[symbol];
+        break;
+
+      case "🔄":
+        result.textContent = "🔄 Rejoue encore !";
+        break;
+
+      case "ℹ️":
+        result.textContent = "ℹ️ Conseil : progresse chaque jour 💡";
+        break;
+
+      case "✖️":
+        result.textContent = "✖️ Rien cette fois-ci 😅";
+        break;
+    }
+  }
+</script>
+
+</body>
+</html>

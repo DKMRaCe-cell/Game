@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Start</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    html {
+      font-size: 20px; /* plus lisible sur desktop */
+    }
+
+    body {
+      background: #0f172a;
+      color: #fff;
+      text-align: center;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      max-width: 700px;
+      margin: 3rem auto;
+      background: #1e293b;
+      padding: 3rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.8;
+    }
+
+    ul {
+      list-style: none;
+      margin-bottom: 2rem;
+      padding-left: 0;
+    }
+
+    ul li {
+      text-align: left;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+
+    ul li::before {
+      content: "✅ ";
+      margin-right: 0.5rem;
+    }
+
+    .slogan {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 2rem;
+    }
+
+    /* ===== FORM ===== */
+    form {
+      margin-top: 2rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 1.2rem;
+      background: #22c55e;
+      border: none;
+      border-radius: 15px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: #16a34a;
+      transform: scale(1.03);
+    }
+
+    /* ===== MEDIA QUERIES ===== */
+    @media (max-width: 768px) {
+      html { font-size: 18px; }
+      h1 { font-size: 2.5rem; }
+      h2 { font-size: 2rem; }
+      p, ul li { font-size: 1.1rem; }
+      button { font-size: 1.1rem; padding: 1rem; }
+    }
+
+    @media (max-width: 480px) {
+      html { font-size: 16px; }
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.7rem; }
+      p, ul li { font-size: 1rem; }
+      button { font-size: 1rem; padding: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Frais d'accès</h1>
+
+    <section class="why-play">
+      <h2>🎯 Pourquoi jouer à ce jeu ?</h2>
+
+      <p>
+        Ce jeu n’est pas un simple divertissement.<br>
+        C’est une <strong>expérience stratégique</strong> qui combine
+        <strong>hasard</strong>, <strong>discipline</strong> et <strong>opportunité</strong>.
+      </p>
+
+      <p>Les frais d’accès permettent de :</p>
+
+      <ul>
+        <li>Filtrer les joueurs réellement motivés</li>
+        <li>Maintenir un système équitable et sérieux</li>
+        <li>Assurer une expérience stable et continue</li>
+      </ul>
+
+      <p class="slogan">🎡 <strong>Joue – Progresse – Gagne</strong></p>
+    </section>
+
+    <form id="signupForm">
+      <button type="button" id="payBtn">💳 Payer (200 FCFA)</button>
+    </form>
+  </div>
+
+  <script>
+    const payBtn = document.getElementById("payBtn");
+    payBtn.addEventListener("click", () => {
+      window.location.href = "payment.html";
+    });
+  </script>
+
+</body>
+</html>
